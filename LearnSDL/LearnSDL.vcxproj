@@ -178,7 +178,13 @@
     <ClInclude Include="source\Game.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dependencies\SDL2\lib\x64\SDL2.dll" />
     <None Include="SDL2.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="dependencies\SDL2\lib\x64\SDL2.lib" />
+    <Library Include="dependencies\SDL2\lib\x64\SDL2main.lib" />
+    <Library Include="dependencies\SDL2\lib\x64\SDL2test.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
