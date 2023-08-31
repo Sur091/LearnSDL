@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\Board.cpp" />
+    <ClCompile Include="source\Dummy.cpp" />
     <ClCompile Include="source\Fruit.cpp" />
     <ClCompile Include="source\Snake.cpp" />
     <ClCompile Include="source\InputManager.cpp" />
