@@ -126,7 +126,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)dependencies\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -163,8 +163,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Opening.cpp" />
     <ClCompile Include="source\Board.cpp" />
-    <ClCompile Include="source\Dummy.cpp" />
     <ClCompile Include="source\Fruit.cpp" />
     <ClCompile Include="source\Snake.cpp" />
     <ClCompile Include="source\InputManager.cpp" />
@@ -172,6 +172,7 @@
     <ClCompile Include="source\Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Opening.h" />
     <ClInclude Include="source\Fruit.h" />
     <ClInclude Include="source\Board.h" />
     <ClInclude Include="source\Snake.h" />

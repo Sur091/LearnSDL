@@ -1,5 +1,7 @@
 #include "InputManager.h"
 
+#include <iostream>
+
 #include "Board.h"
 
 InputManager::InputManager():

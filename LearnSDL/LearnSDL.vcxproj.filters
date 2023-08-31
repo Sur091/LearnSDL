@@ -33,7 +33,7 @@
     <ClCompile Include="source\Fruit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Dummy.cpp">
+    <ClCompile Include="source\Opening.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Fruit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Opening.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,9 +19,12 @@ std::uint32_t RandomInt(const std::uint32_t max)
 	return distribution(generator);
 }
 
-Board::Board(const uint32_t length, const uint32_t width, const uint32_t sep) :
-	snake_(new Snake()), fruit_(new Fruit(RandomInt(length), RandomInt(width))), game_events_(std::stack<Events>{}),
-	length_(length), width_(width), sep_(sep), last_(Box{0, 0})
+Board::Board(const uint32_t length, const uint32_t width, const uint32_t sep, SDL_Window* window) :
+	snake_(new Snake()), 
+	fruit_(new Fruit(RandomInt(length), RandomInt(width))), 
+	opening_(new Opening(window, length*sep, width*sep)),
+	game_events_(std::deque<Events>{}),
+	length_(length), width_(width), sep_(sep), last_({0, 0})
 {	
 }
 
@@ -31,6 +34,26 @@ Board::~Board()
 
 void Board::Update()
 {
+	bool changed_directions = false;
+	// Process some events
+	while (!changed_directions && !game_events_.empty())
+	{
+		changed_directions = false;
+		Events event = game_events_.back();
+		game_events_.pop_back();
+
+		switch (event)
+		{
+		case Events::UP:
+			changed_directions = snake_->Go(Snake::Direction::UP); break;
+		case Events::DOWN:
+			changed_directions = snake_->Go(Snake::Direction::DOWN); break;
+		case Events::LEFT:
+			changed_directions = snake_->Go(Snake::Direction::LEFT); break;
+		case Events::RIGHT:
+			changed_directions = snake_->Go(Snake::Direction::RIGHT); break;
+		}
+	}
 	// Snake ate the fruit
 	if (IsSnakeEatingFruit())
 	{
@@ -42,41 +65,26 @@ void Board::Update()
 			fruit_->y_ = RandomInt(width_);
 		}
 	}
-	// snake_->Print();
+
+	// Update the snake's Position
+	snake_->Print();
 	last_ = snake_->get_last();
 	snake_->Update();
-
-	// Process some events
-	while (!game_events_.empty())
-	{
-		Events event = game_events_.top();
-		game_events_.pop();
-
-		switch (event)
-		{
-		case Events::UP:
-			snake_->GoUp(); break;
-		case Events::DOWN:
-			snake_->GoDown(); break;
-		case Events::LEFT:
-			snake_->GoLeft(); break;
-		case Events::RIGHT:
-			snake_->GoRight(); break;
-			
-		}
-	}
 }
 
-void Board::Show(SDL_Renderer* renderer)
+void Board::Show(SDL_Renderer* renderer, SDL_Window* window)
 {
-	SDL_SetRenderDrawColor(renderer, 51, 51, 51, 255);
-	SDL_RenderClear(renderer);
+	//SDL_RenderClear(renderer);
 
 
-	fruit_->Show(renderer, sep_);
-	snake_->Show(renderer, sep_);
+	//fruit_->Show(renderer, sep_);
+	//snake_->Show(renderer, sep_);
+	opening_->Show(renderer);
 
-	DrawLines(renderer);
+	//DrawLines(renderer);
+
+	SDL_Delay(Levels[(int)Level::EIGHT]);
+
 }
 
 void Board::DrawLines(SDL_Renderer* renderer)
@@ -95,7 +103,7 @@ void Board::DrawLines(SDL_Renderer* renderer)
 
 void Board::AddEvent(Events event)
 {
-	game_events_.push(event);
+	game_events_.push_front(event);
 }
 
 bool Board::IsSnakeEatingFruit()

@@ -2,13 +2,15 @@
 
 #include <cstdint>
 #include <vector>
+#include <array>
+#include <complex>
 
 #include "SDL.h"
 
 struct Box
 {
-	uint32_t x;
-	uint32_t y;
+	int32_t x;
+	int32_t y;
 };
 
 
@@ -20,24 +22,26 @@ public:
 		
 	void Update();
 	void Show(SDL_Renderer* renderer, uint32_t sep);
+	void DrawEyes(SDL_Renderer* renderer, int32_t sep);
 
-	void AddBody(Box tail) { body_.push_back(tail); };
+	void AddBody(const std::complex<int32_t> tail) { body_.push_back(tail); };
 
-	bool IsIntersecting(uint32_t x, uint32_t y);
-	bool HeadAt(uint32_t x, uint32_t y);
+	bool IsIntersecting(int32_t x, int32_t y);
+	bool HeadAt(int32_t x, int32_t y);
 	void Print();
 
-	inline Box get_last() const { return body_[body_.size() - 1]; }
+	enum class Direction
+	{
+		UP = 0, DOWN, LEFT, RIGHT,
+	};
+	bool Go(Direction direction);
 
-	inline void GoUp() { if (velocity_.y == 0) { velocity_.x = 0; velocity_.y = -1; } }
-	inline void GoDown() { if (velocity_.y == 0) { velocity_.x = 0; velocity_.y = 1; } }
-	inline void GoLeft() { if (velocity_.x == 0) { velocity_.x = -1; velocity_.y = 0; } }
-	inline void GoRight() { if (velocity_.x == 0) { velocity_.x = 1; velocity_.y = 0; } }
+	inline std::complex<int32_t> get_last() const { return body_[body_.size() - 1]; }
 private:
-
-	std::vector<Box> body_;
+	std::vector<std::complex<int32_t>> body_;
 	uint32_t length_;
-	Box velocity_;
+	std::complex<int32_t> velocity_;
 
+private:
+	static const std::array<std::complex<int32_t>, 4> kDirections;
 };
-
