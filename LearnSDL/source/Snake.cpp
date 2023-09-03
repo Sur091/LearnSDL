@@ -4,7 +4,6 @@
 
 Snake::Snake() :
 	body_(std::vector<std::complex<int32_t>>{{ 0, 0 }}),
-	length_(1),
 	velocity_{1, 0}
 {
 }
@@ -20,14 +19,17 @@ const std::array<std::complex<int32_t>, 4> Snake::kDirections{
 		std::complex<int32_t>{ 1,  0},
 };
 
-void Snake::Update()
+void Snake::Update(int32_t length, int32_t width)
 {
 	for (auto box = body_.end()-1; box > body_.begin(); box--)
 	{
 		*box = *(box - 1);
 	}
 
-	body_[0] += velocity_;
+	body_[0] = std::complex<int32_t>{
+		(length + body_[0].real() + velocity_.real()) % length,
+		(width + body_[0].imag() + velocity_.imag()) % width
+	};
 }
 
 void Snake::Show(SDL_Renderer* renderer, uint32_t sep)
@@ -91,18 +93,19 @@ bool Snake::IsIntersecting(int32_t x, int32_t y)
 	return false;
 }
 
-bool Snake::HeadAt(int32_t x, int32_t y)
+bool Snake::IsHeadAt(int32_t x, int32_t y)
 {
 	return body_[0].real() == x && body_[0].imag() == y;
 }
 
-void Snake::Print()
+void Snake::Log()
 {
+	std::cout << "Location\n";
 	for (auto& box : body_)
 	{
-		std::cout << "box: " << box.real() << ' ' << box.imag() << '\n';
+		std::cout << box << '\n';
 	}
-	std::cout << velocity_ << '\n';
+	std::cout << "Velocity " << velocity_ << '\n';
 	std::cout << "\n";
 }
 

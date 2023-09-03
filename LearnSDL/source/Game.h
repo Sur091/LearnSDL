@@ -8,9 +8,9 @@
 #include "InputManager.h"
 #include "Board.h"
 
-#define SCREEN_WIDHT 1920
-#define SCREEN_HEIGHT 1080
 #define SEPERATION 40
+#define SCREEN_WIDHT 640
+#define SCREEN_HEIGHT 360
 
 
 class Game

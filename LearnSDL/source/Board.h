@@ -25,13 +25,16 @@ public:
 		RIGHT,
 	};
 	void Update();
+	void HandleEvents();
 	void Show(SDL_Renderer* renderer, SDL_Window* window);
 	void DrawLines(SDL_Renderer* renderer);
+	void Automatic();
 	
 	void AddEvent(Events event);
 
 	bool IsSnakeEatingFruit();
 	bool IsFruitInsideSnake();
+	void GetNewFruit();
 private:
 	std::unique_ptr<Snake> snake_;
 	std::unique_ptr<Fruit> fruit_;
@@ -40,12 +43,12 @@ private:
 	std::deque<Events> game_events_;
 
 	uint32_t length_, width_, sep_;
-	std::complex<int32_t> last_;
+	std::complex<int32_t> snake_tail_;
 
 	enum class Level
 	{
-		ZERO = 0, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN,
+		ZERO = 0, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, UNDEFINED,
 	};
-	const std::array<int32_t, 11> Levels = { 2500, 500, 333, 250, 200, 166, 143, 125, 111, 100};
+	const std::array<int32_t, 12> Levels = { 2500, 500, 333, 250, 200, 166, 143, 125, 111, 100, 91, 0};
 };
 

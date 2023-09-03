@@ -54,5 +54,7 @@ void Game::Update()
 void Game::Render()
 {
 	board_->Show(renderer_, window_);
-	SDL_UpdateWindowSurface(window_);
+
+	SDL_RenderPresent(renderer_);
+	//SDL_UpdateWindowSurface(window_);
 }

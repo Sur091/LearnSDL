@@ -24,7 +24,7 @@ Board::Board(const uint32_t length, const uint32_t width, const uint32_t sep, SD
 	fruit_(new Fruit(RandomInt(length), RandomInt(width))), 
 	opening_(new Opening(window, length*sep, width*sep)),
 	game_events_(std::deque<Events>{}),
-	length_(length), width_(width), sep_(sep), last_({0, 0})
+	length_(length), width_(width), sep_(sep), snake_tail_({0, 0})
 {	
 }
 
@@ -33,6 +33,27 @@ Board::~Board()
 }
 
 void Board::Update()
+{
+	Automatic();
+	HandleEvents();
+
+	// Let Snake play Automatically
+	// Snake ate the fruit
+	if (IsSnakeEatingFruit())
+	{
+		// std::cout << "last " << last_.x << ' ' << last_.y << '\n';
+		snake_->AddBody(snake_tail_);
+		
+		GetNewFruit();
+	}
+
+	snake_->Log();
+	// Update the snake's Position
+	snake_tail_ = snake_->get_head();
+	snake_->Update(length_, width_);
+}
+
+void Board::HandleEvents()
 {
 	bool changed_directions = false;
 	// Process some events
@@ -54,36 +75,22 @@ void Board::Update()
 			changed_directions = snake_->Go(Snake::Direction::RIGHT); break;
 		}
 	}
-	// Snake ate the fruit
-	if (IsSnakeEatingFruit())
-	{
-		// std::cout << "last " << last_.x << ' ' << last_.y << '\n';
-		snake_->AddBody(last_);
-		while (IsFruitInsideSnake())
-		{
-			fruit_->x_ = RandomInt(length_);
-			fruit_->y_ = RandomInt(width_);
-		}
-	}
-
-	// Update the snake's Position
-	snake_->Print();
-	last_ = snake_->get_last();
-	snake_->Update();
 }
 
 void Board::Show(SDL_Renderer* renderer, SDL_Window* window)
 {
-	//SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(renderer, 52, 52, 52, 255);
+	SDL_RenderClear(renderer);
 
 
-	//fruit_->Show(renderer, sep_);
-	//snake_->Show(renderer, sep_);
-	opening_->Show(renderer);
+	fruit_->Show(renderer, sep_);
+	snake_->Show(renderer, sep_);
+	DrawLines(renderer);
 
-	//DrawLines(renderer);
+	//opening_->Show(renderer);
 
-	SDL_Delay(Levels[(int)Level::EIGHT]);
+
+	SDL_Delay(Levels[(int)Level::UNDEFINED]);
 
 }
 
@@ -101,6 +108,26 @@ void Board::DrawLines(SDL_Renderer* renderer)
 	}
 }
 
+void Board::Automatic()
+{
+	auto vel = snake_->get_head() - fruit_->get_pos();
+	if (vel.real() == 0)
+	{
+		if (vel.imag() == 0) return;
+		if (vel.imag() < 0)
+			game_events_.push_front(Events::DOWN);
+		else
+			game_events_.push_front(Events::UP);
+	}
+	else
+	{
+		if (vel.real() < 0)
+			game_events_.push_front(Events::RIGHT);
+		else
+			game_events_.push_front(Events::LEFT);
+	}
+}
+
 void Board::AddEvent(Events event)
 {
 	game_events_.push_front(event);
@@ -108,10 +135,19 @@ void Board::AddEvent(Events event)
 
 bool Board::IsSnakeEatingFruit()
 {
-	return snake_->HeadAt(fruit_->x_, fruit_->y_);
+	return snake_->IsHeadAt(fruit_->x_, fruit_->y_);
 }
 
 bool Board::IsFruitInsideSnake()
 {
 	return snake_->IsIntersecting(fruit_->x_, fruit_->y_);
+}
+
+ void Board::GetNewFruit()
+{
+	do 
+	{
+		fruit_->x_ = RandomInt(length_);
+		fruit_->y_ = RandomInt(width_);
+	} while (IsFruitInsideSnake());
 }

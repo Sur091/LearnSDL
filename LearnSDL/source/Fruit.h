@@ -1,5 +1,6 @@
 #pragma once
 
+#include <complex>
 #include <cstdint>
 
 #include "SDL.h"
@@ -7,12 +8,14 @@
 class Fruit
 {
 public:
-	Fruit(uint32_t limit_x, uint32_t limit_y);
+	Fruit(int32_t limit_x, int32_t limit_y);
 
 	~Fruit();
 
-	void Show(SDL_Renderer* renderer, uint32_t sep);
+	void Show(SDL_Renderer* renderer, int32_t sep);
 
-	uint32_t x_;
-	uint32_t y_;
+	inline std::complex<int32_t> get_pos() { return std::complex<int32_t>{x_, y_}; }
+
+	int32_t x_;
+	int32_t y_;
 };
